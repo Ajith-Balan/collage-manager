@@ -16,7 +16,8 @@ blood:"",
 stdid:"",
 password:"",
 div:"",
-number:""
+number:"",
+photo:""
 
 })
 const handleChange=(e)=>{
@@ -89,7 +90,7 @@ alert("student created successfully")
 <input name='password' type="password" id='DOB' onChange={handleChange}/><br></br>
 <label htmlFor="email">Number:<br></br></label>
 
-<input name='number' type="text" id='number' onChange={handleChange} />
+<input name='number' type="number" id='number' onChange={handleChange} />
 <br></br>
 <label htmlFor="email">Division:<br></br> </label>
 <input name='div' type="text" id='Alternativenumber' onChange={handleChange} /><br></br>

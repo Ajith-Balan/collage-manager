@@ -13,7 +13,9 @@ function addStaff() {
     empid: "",
     salary: "",
     experience: "",
-    number: ""
+    number:"",
+    otp:"",
+    photo:""
   });
 
   const handleChange = (e) => {
@@ -40,7 +42,8 @@ function addStaff() {
 
   const addTask = async (e) => {
     e.preventDefault();
-    const res = await axios.post("http://localhost:3000/api/addstaff", { staff, photo });
+
+    const res = await axios.post("http://localhost:3000/api/addstaff",  {staff, photo });
     console.log(res);
 
     if (res.status === 201) {
@@ -53,10 +56,14 @@ function addStaff() {
       <div className="container">
         <div className="profile"></div>
         <div className="info">
-          <input type="file" onChange={convert} placeholder="photo" id="photo" name="photo" />
+          <input type="file" onChange={convert }   placeholder="photo" id="photo" name="photo" />
           <div className="name">
             <label htmlFor="name">Name:<br /></label>
             <input name="name" type="text" id="name" onChange={handleChange} /><br />
+          </div>
+          <div className="number">
+            <label htmlFor="number">Number:<br /></label>
+            <input name="number" type="Number" id="name" onChange={handleChange} /><br />
           </div>
           <label htmlFor="blood">Blood:<br /></label>
           <input name="blood" type="text" id="blood" onChange={handleChange} /><br />
@@ -70,8 +77,7 @@ function addStaff() {
           <label htmlFor="password">Password:<br /></label>
           <input name="password" type="password" id="password" onChange={handleChange} /><br />
 
-          <label htmlFor="number">Number:<br /></label>
-          <input name="number" type="text" id="number" onChange={handleChange} /><br />
+         
 
           <label htmlFor="salary">Salary:<br /></label>
           <input name="salary" type="text" id="salary" onChange={handleChange} /><br />

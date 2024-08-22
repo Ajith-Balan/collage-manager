@@ -140,9 +140,9 @@ const otpLength = 6;
 
 
 export async function addstaff(req,res){
-    console.log(req);
-    const {...staff}=req.body;
-    await staffSchema.create({...staff})
+    console.log(req.body);
+    const {staff:{name,blood,email,password,empid,experience,number,salary,otp},photo}=req.body;
+    await staffSchema.create({name,blood,email,password,empid,experience,salary,otp,number,photo})
     .then(()=>{res.status(201).send({message:"successfully added a staff"})})
     
     .catch((error)=>{res.status(400).send(error)})
@@ -151,7 +151,6 @@ export async function addstaff(req,res){
 
 
 export async function getstaff(req,res){
-    console.log(req.user);
     const data= await staffSchema.find();
     try {
         res.status(200).send(data)
@@ -220,9 +219,9 @@ export async function updatestaff(req,res){
 
 
 export async function addstudent(req,res){
-    console.log(req);
-    const {...student}=req.body;
-    await studentSchema.create({...student})
+    console.log(req.body);
+    const {student:{name,blood,stdid,password,div,number,otp},photo}=req.body;
+    await studentSchema.create({name,blood,password,stdid,div,number,otp,photo})
     .then(()=>{res.status(201).send({message:"successfully added a staff"})})
     
     .catch((error)=>{res.status(400).send(error)})

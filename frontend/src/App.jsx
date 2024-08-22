@@ -4,6 +4,7 @@ import SignInPage from './components/login';
 import adminlogin from './components/adminlogin';
 import addstudent from './components/addstudent';
 import addstaff from './components/addstaff';
+import ShowStaff from './components/showstaff';
 
 
 
@@ -22,6 +23,8 @@ return(
 <Route path='/admin' Component={adminlogin}/>
 <Route path='/addstudent' Component={addstudent}/>
 <Route path='/addstaff' Component={addstaff}/>
+<Route path='/showstaff' Component={ShowStaff}/>
+
 
 
 
