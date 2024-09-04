@@ -55,7 +55,7 @@ bcrypt.hash(password,10).then(async(hpassword)=>{
 
     })
     .catch((error)=>{
-        return res.status(400).send({error:error})
+  return res.status(400).send({error:error})
     })
 }).catch((error)=>{
     res.status(400).send({error:error})
@@ -86,6 +86,53 @@ export async function adminLogin(req,res){
 
 
 
+export async function studentlogin(req, res) {
+    try {
+        const { email, password } = req.body;
+        
+        // Check if the student exists
+        const user = await studentSchema.findOne({ email });
+        if (!user) return res.status(404).json({ msg: "User not found" });
+
+        // Compare the password
+        if (password !== user.password) return res.status(400).json({ msg: "Incorrect password" });
+
+        // Successful login
+        return res.status(200).json({ msg: "Login successful", email: user.email });
+    } catch (error) {
+        console.error("Error during student login", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+
+
+
+export async function stafflogin(req, res) {
+    try {
+        const { email, password } = req.body;
+        
+        // Check if the student exists
+        const user = await staffSchema.findOne({ email });
+        if (!user) return res.status(404).json({ msg: "User not found" });
+
+        // Compare the password
+        if (password !== user.password) return res.status(400).json({ msg: "Incorrect password" });
+
+        // Successful login
+        return res.status(200).json({ msg: "Login successful", email: user.email });
+    } catch (error) {
+        console.error("Error during student login", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+
+
+
+
+
+
 
 export async function Home(req,res){
     const {id,username}=req.user
@@ -97,34 +144,140 @@ export async function Home(req,res){
 
 
 
-export async function Forget(req,res){
-    const {email}=req.body;
+// Assuming transporter is set up elsewhere in your code
+// Example:
+// const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//         user: 'peterspidy5gmail.com',
+//         pass: '9809326980',
+//     },
+// });
+
+export async function studentforget(req, res) {
+    const { email } = req.body;
     console.log(email);
-const data=await adminSchema.findOne({email:email});
-if(!data)
-    return res.status(400).send({msg:"user not found"})
 
-const otpLength = 6;
-  // Generate a random numeric OTP with exactly 6 digits
-  const otp = Math.floor(100000 + Math.random() * 900000);
-  console.log(otp);
-//   update otp in data base code here
-  const info = await transporter.sendMail({
-    from: 'peterspidy5@gmail.com', // sender address
-    to: "ajithaji9404@gmail.com", // list of receivers
-    subject: "OTP", // Subject line
-    text: "your valid otp", // plain text body
-    html: `<b>${otp}</b>`, // html body
-  });
+    try {
+        const data = await studentSchema.findOne({ email: email });
+        if (!data) {
+            return res.status(400).send({ msg: "User not found" });
+        }
 
-  console.log("Message sent: %s", info.messageId);
+        // Generate a random numeric OTP with exactly 6 digits
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        console.log(otp);
 
+        // Update OTP in the database
+        data.otp = otp;
+        await data.save();
+
+        // Send OTP via email
+        const info = await transporter.sendMail({
+            from: 'peterspidy5@gmail.com', // sender address
+            to: data.email, // list of receivers
+            subject: "OTP Verification", // Subject line
+            text: `Your OTP is ${otp}`, // plain text body
+            html: `<b>${otp}</b>`, // HTML body
+        });
+
+        console.log("Message sent: %s", info.messageId);
+
+        // Respond with a success message
+        res.status(200).send({ msg: "OTP sent successfully" });
+    } catch (error) {
+        console.error("Error in studentforget function:", error);
+        res.status(500).send({ msg: "An error occurred while processing your request" });
+    }
 }
 
 
 
 
 
+export async function verifyOtp(req, res) {
+    const { email, otp } = req.body;
+
+    const data = await studentSchema.findOne({ email: email });
+    if (!data) {
+        return res.status(400).send({ msg: "User not found" });
+    }
+
+    if (data.otp === otp) {
+        // Clear OTP from the database after successful verification
+        data.otp = null;
+        await data.save();
+
+        return res.status(200).send({ msg: "OTP verified successfully" });
+    } else {
+        return res.status(400).send({ msg: "Invalid OTP" });
+    }
+}
+
+
+
+
+
+
+export async function staffforget(req, res) {
+    const { email } = req.body;
+    console.log(email);
+
+    try {
+        const data = await staffSchema.findOne({ email: email });
+        if (!data) {
+            return res.status(400).send({ msg: "User not found" });
+        }
+
+        // Generate a random numeric OTP with exactly 6 digits
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        console.log(otp);
+
+        // Update OTP in the database
+        data.otp = otp;
+        await data.save();
+
+        // Send OTP via email
+        const info = await transporter.sendMail({
+            from: 'peterspidy5@gmail.com', // sender address
+            to: data.email, // list of receivers
+            subject: "OTP Verification", // Subject line
+            text: `Your OTP is ${otp}`, // plain text body
+            html: `<b>${otp}</b>`, // HTML body
+        });
+
+        console.log("Message sent: %s", info.messageId);
+
+        // Respond with a success message
+        res.status(200).send({ msg: "OTP sent successfully" });
+    } catch (error) {
+        console.error("Error in studentforget function:", error);
+        res.status(500).send({ msg: "An error occurred while processing your request" });
+    }
+}
+
+
+
+
+
+export async function sverifyOtp(req, res) {
+    const { email, otp } = req.body;
+
+    const data = await staffSchema.findOne({ email: email });
+    if (!data) {
+        return res.status(400).send({ msg: "User not found" });
+    }
+
+    if (data.otp === otp) {
+        // Clear OTP from the database after successful verification
+        data.otp = null;
+        await data.save();
+
+        return res.status(200).send({ msg: "OTP verified successfully" });
+    } else {
+        return res.status(400).send({ msg: "Invalid OTP" });
+    }
+}
 
 
 
@@ -162,10 +315,64 @@ export async function getstaff(req,res){
 }
 
 
-export async function deletestaff(req,res){
-    const {id}=req.params;
-    const data= await staffSchema.deleteOne({_id:id});
+
+export async function getonestaff(req,res) {
     try {
+        const {id}=req.params;
+        console.log(id);
+        const data = await staffSchema.findOne({_id:id})
+        console.log(data);
+        res.status(200).send(data)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+}
+
+export async function staflogin(req,res) {
+    try {
+        const { email } = req.body;
+
+        // Fetch the student details from the database using stdid
+        const staff = await staffSchema.findOne({ email });
+        if (!staff) return res.status(404).send({ msg: "staff not found" });
+
+        // Return the student's details
+        return res.status(200).send(staff);
+    } catch (error) {
+        console.error("Error fetching staff details", error);
+        return res.status(500).send({ error: "Internal server error" });
+    }
+}
+
+
+
+export async function stalogin(req,res) {
+    try {
+        const { email } = req.params;
+
+        // Fetch the student details from the database using stdid
+        const staff = await staffSchema.findOne({ email });
+        if (!staff) return res.status(404).send({ msg: "staff not found" });
+
+        // Return the student's details
+        return res.status(200).send(staff);
+    } catch (error) {
+        console.error("Error fetching staff details", error);
+        return res.status(500).send({ error: "Internal server error" });
+    }
+}
+
+
+
+
+
+export async function deletestaff(req,res){
+
+    try { 
+        const {id}=req.params;
+console.log(id);
+
+  await staffSchema.deleteOne({_id:id});
         res.status(200).send({message:"successfully deleted the staff"})
 
     } catch (error) {
@@ -220,8 +427,8 @@ export async function updatestaff(req,res){
 
 export async function addstudent(req,res){
     console.log(req.body);
-    const {student:{name,blood,stdid,password,div,number,otp},photo}=req.body;
-    await studentSchema.create({name,blood,password,stdid,div,number,otp,photo})
+    const {student:{name,blood,stdid,password,email,div,number,otp},photo}=req.body;
+    await studentSchema.create({name,blood,password,email,stdid,div,number,otp,photo})
     .then(()=>{res.status(201).send({message:"successfully added a staff"})})
     
     .catch((error)=>{res.status(400).send(error)})
@@ -238,6 +445,34 @@ export async function getstudent(req,res){
     } catch (error) {
         res.status(500).send(error)
 
+    }
+}
+
+export async function getonestudent(req,res) {
+    try {
+        const {id}=req.params;
+        console.log(id);
+        const data = await studentSchema.findOne({_id:id})
+        console.log(data);
+        res.status(200).send(data)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+}
+
+export async function stdlogin(req,res) {
+    try {
+        const { email } = req.params;
+
+        // Fetch the student details from the database using stdid
+        const student = await studentSchema.findOne({ email });
+        if (!student) return res.status(404).send({ msg: "Student not found" });
+
+        // Return the student's details
+        return res.status(200).json(student);
+    } catch (error) {
+        console.error("Error fetching student details", error);
+        return res.status(500).json({ error: "Internal server error" });
     }
 }
 

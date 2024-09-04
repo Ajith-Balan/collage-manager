@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom'
 
 function AdminLogin() {
+  const navigator=useNavigate()
+
   const [admin, setUser] = useState({
     name: "",
     email: "",
@@ -38,7 +41,7 @@ function AdminLogin() {
       const res = await axios.post("http://localhost:3000/api/adminlogin", loginUser);
       console.log(res.data);
       if (res.status === 200) {
-        alert("Successfully signed in");
+        navigator('/adminhome')
       }
     } catch (error) {
       console.error("Error during sign-in", error);
