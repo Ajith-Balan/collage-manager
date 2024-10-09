@@ -144,15 +144,6 @@ export async function Home(req,res){
 
 
 
-// Assuming transporter is set up elsewhere in your code
-// Example:
-// const transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//         user: 'peterspidy5gmail.com',
-//         pass: '9809326980',
-//     },
-// });
 
 export async function studentforget(req, res) {
     const { email } = req.body;
@@ -205,7 +196,6 @@ export async function verifyOtp(req, res) {
 
     if (data.otp === otp) {
         // Clear OTP from the database after successful verification
-        data.otp = null;
         await data.save();
 
         return res.status(200).send({ msg: "OTP verified successfully" });
@@ -270,7 +260,6 @@ export async function sverifyOtp(req, res) {
 
     if (data.otp === otp) {
         // Clear OTP from the database after successful verification
-        data.otp = null;
         await data.save();
 
         return res.status(200).send({ msg: "OTP verified successfully" });
@@ -295,6 +284,8 @@ export async function sverifyOtp(req, res) {
 export async function addstaff(req,res){
     console.log(req.body);
     const {staff:{name,blood,email,password,empid,experience,number,salary,otp},photo}=req.body;
+    const staff = await staffSchema.findOne({ email });
+    if (staff) return res.status(404).send({ msg: "Already a user please sign in" });
     await staffSchema.create({name,blood,email,password,empid,experience,salary,otp,number,photo})
     .then(()=>{res.status(201).send({message:"successfully added a staff"})})
     
@@ -321,7 +312,6 @@ export async function getonestaff(req,res) {
         const {id}=req.params;
         console.log(id);
         const data = await staffSchema.findOne({_id:id})
-        console.log(data);
         res.status(200).send(data)
     } catch (error) {
         res.status(400).send(error)
@@ -453,7 +443,6 @@ export async function getonestudent(req,res) {
         const {id}=req.params;
         console.log(id);
         const data = await studentSchema.findOne({_id:id})
-        console.log(data);
         res.status(200).send(data)
     } catch (error) {
         res.status(400).send(error)

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams,Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const StaffDetails = () => {
   const { email } = useParams();
@@ -33,42 +33,61 @@ const StaffDetails = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex flex-col items-center bg-white shadow-lg rounded-lg p-6">
-        <div className="avatar mb-4">
-          {
-            data.photo
-              ? <img className="rounded-full h-32 w-32 object-cover" src={data.photo} alt="Staff" />
-              : <img className="rounded-full h-32 w-32 object-cover" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTxGjVtHp-iKdeRIUkAuP4jJsV1CRFTN3eyg&s" alt="Default" />
-          }
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Navbar */}
+      <nav className="bg-blue-600 p-4 shadow-md">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="text-white text-2xl font-bold">
+            <Link to="/">Home</Link>
+          </div>
+         
         </div>
-        <div className="info text-center">
-          <div className="name mb-2">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
-            <h2 className="text-xl font-bold text-gray-800">{data.name}</h2>
-          </div>
-          <div className="mb-2">
-            <label htmlFor="empid" className="block text-sm font-medium text-gray-700">Employee ID:</label>
-            <h2 className="text-lg text-gray-800">{data.empid}</h2>
-          </div>
-          <div className="mb-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
-            <h2 className="text-lg text-gray-800">{data.email}</h2>
-          </div>
-          <div>
-            <label htmlFor="number" className="block text-sm font-medium text-gray-700">Number:</label>
-            <h2 className="text-lg text-gray-800">{data.number}</h2>
+      </nav>
+
+      {/* Staff Details Section */}
+      <div className="flex-1 flex flex-col justify-center items-center mt-16 px-4">
+        <div className="w-full max-w-lg p-8 bg-white shadow-lg rounded-lg">
+          <div className="flex flex-col items-center">
+            <div className="avatar mb-4">
+              {
+                data.photo
+                  ? <img className="rounded-full h-32 w-32 object-cover" src={data.photo} alt="Staff" />
+                  : <img className="rounded-full h-32 w-32 object-cover" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTxGjVtHp-iKdeRIUkAuP4jJsV1CRFTN3eyg&s" alt="Default" />
+              }
+            </div>
+            <h2 className='text-2xl font-bold text-gray-800 mb-4'>{data.name}</h2>
+            <div className="w-full">
+              <div className="mb-4">
+                <label htmlFor="empid" className="block text-sm font-medium text-gray-700">Employee ID:</label>
+                <h2 className="text-lg text-gray-800">{data.empid}</h2>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
+                <h2 className="text-lg text-gray-800">{data.email}</h2>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="number" className="block text-sm font-medium text-gray-700">Number:</label>
+                <h2 className="text-lg text-gray-800">{data.number}</h2>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div>
-        <Link to={'/addstudent'}>
-        add students
+
+      {/* Navigation Links */}
+      <div className="flex justify-center gap-4 mb-6">
+        <Link to={'/addstudent'} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          Add Students
         </Link>
-        <Link to={'/showstudent'}>
-        show students
+        <Link to={'/showstudent'} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          Show Students
         </Link>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-blue-600 w-full p-4 text-white text-center">
+        <p>&copy; {new Date().getFullYear()} Code-A.B. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

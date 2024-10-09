@@ -2,19 +2,16 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const StdFpPwd = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Fixed useNavigate hook usage
 
   // Function to handle email submission
   const handleEmailSubmit = async () => {
     try {
-      console.log(email);
       const res = await axios.post("http://localhost:3000/api/stdfpwd", { email });
-      console.log(res);
       setMessage("OTP sent to your email");
     } catch (err) {
       setMessage("Failed to send OTP. Please try again.");
@@ -28,10 +25,11 @@ const StdFpPwd = () => {
     try {
       const res = await axios.post("http://localhost:3000/api/otpverify", { email, otp });
       setMessage(res.data.msg);
-       // Show success message
-       if (res.status==200) {
-        navigator(`/studentpage/${email.email}`)
-       }
+      
+      // Navigate on successful OTP verification
+      if (res.status === 200) {
+        navigate(`/studentpage/${email}`);
+      }
       
     } catch (err) {
       setMessage(err.response?.data?.msg || "OTP verification failed. Please try again.");

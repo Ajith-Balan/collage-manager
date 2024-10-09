@@ -2,25 +2,21 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
 const StfFpPwd = () => {
-
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Correct usage of useNavigate hook
 
   // Function to handle email submission
   const handleEmailSubmit = async () => {
     try {
-      console.log(email);
       const res = await axios.post("http://localhost:3000/api/stffpwd", { email });
-      console.log(res);
       setMessage("OTP sent to your email");
     } catch (err) {
       setMessage("Failed to send OTP. Please try again.");
     }
   };
-
 
   // Function to handle OTP verification
   const handleOtpSubmit = async (e) => {
@@ -28,20 +24,21 @@ const StfFpPwd = () => {
 
     try {
       const res = await axios.post("http://localhost:3000/api/sotpverify", { email, otp });
-      setMessage(res.data.msg); // Show success message
-      if (res.status==200) {
-        navigator(`/staffpage/${email.email}`)
-       }
+      setMessage(res.data.msg);
+
+      // Navigate to staff page on successful OTP verification
+      if (res.status === 200) {
+        navigate(`/staffpage/${email}`);
+      }
     } catch (err) {
       setMessage(err.response?.data?.msg || "OTP verification failed. Please try again.");
     }
   };
 
-  
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-80">
-        {/* <h2 className="text-2xl font-semibold mb-4">Password Reset</h2> */}
+        <h2 className="text-2xl font-semibold mb-4">Password Reset</h2>
 
         <div className="mb-4">
           <label className="block text-gray-700 mb-2">Enter your email</label>
@@ -54,7 +51,7 @@ const StfFpPwd = () => {
             required
           />
           <button
-            onClick={handleEmailSubmit }
+            onClick={handleEmailSubmit}
             className="w-full bg-blue-500 text-white p-2 rounded mt-4 hover:bg-blue-600"
           >
             Get OTP

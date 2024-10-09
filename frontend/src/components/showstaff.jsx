@@ -12,10 +12,10 @@ function ShowStaff() {
 
   const fetchStaff = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/getstaff");
+      const response = await axios.get('http://localhost:3000/api/getstaff');
       setStaffList(response.data);
     } catch (error) {
-      console.error("Error fetching staff:", error);
+      console.error('Error fetching staff:', error);
     }
   };
 
@@ -27,60 +27,70 @@ function ShowStaff() {
         fetchStaff(); // Refresh the staff list after deletion
       }
     } catch (error) {
-      console.error("Error deleting staff:", error);
+      console.error('Error deleting staff:', error);
       alert('Failed to delete staff');
     }
   };
 
-
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Staff List</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="py-2 px-4 border">Photo</th>
-              <th className="py-2 px-4 border">Name</th>
-              <th className="py-2 px-4 border">Employee ID</th>
-              <th className="py-2 px-4 border">Email</th>
-              <th className="py-2 px-4 border">Phone Number</th>
-              <th className="py-2 px-4 border">Password</th>
-              <th className="py-2 px-4 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {staffList.map((staff) => (
-              <tr key={staff._id} className="hover:bg-gray-100">
-                <td className="py-2 px-4 border">
-                  <img 
-                    style={{ objectFit: "cover" }} 
-                    className="h-12 w-12 rounded-full"
-                    src={staff.photo || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTxGjVtHp-iKdeRIUkAuP4jJsV1CRFTN3eyg&s"} 
-                    alt="Staff"
-                  />
-                </td>
-                <td className="py-2 px-4 border">{staff.name}</td>
-                <td className="py-2 px-4 border">{staff.empid}</td>
-                <td className="py-2 px-4 border">{staff.email}</td>
-                <td className="py-2 px-4 border">{staff.number}</td>
-                <td className="py-2 px-4 border">{staff.password}</td>
-                <td className="py-2 px-4 border flex space-x-2">
-                  <Link to={`/editstaff/${staff._id}`}>
-                    <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition duration-200">Edit</button>
-                  </Link>
-                  <button 
-                    onClick={() => deleteStaff(staff._id)} 
-                    className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition duration-200"
-                  >
-                    Delete
+    <div className="min-h-screen flex flex-col justify-between">
+      {/* Navigation */}
+      <nav className="bg-blue-600 fixed top-0 w-full p-4 z-50">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="text-white text-2xl font-bold">
+            <Link to="/">HOME</Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main content */}
+      <div className="container mx-auto p-4 pt-20">
+        <h2 className="text-2xl font-bold mb-4">Staff List</h2>
+        {/* 3 columns layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {staffList.map((staff) => (
+            <div
+              key={staff._id}
+              className="bg-white shadow-lg rounded-lg p-6 flex flex-col justify-between"
+            >
+              <div className="flex items-center mb-4">
+                <img
+                  style={{ objectFit: 'cover' }}
+                  className="h-16 w-16 rounded-full mr-4"
+                  src={
+                    staff.photo ||
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTxGjVtHp-iKdeRIUkAuP4jJsV1CRFTN3eyg&s'
+                  }
+                  alt="Staff"
+                />
+                <div>
+                  <h3 className="text-xl font-bold">{staff.name}</h3>
+                  <p className="text-gray-600">Emp ID: {staff.empid}</p>
+                  <p className="text-gray-600">Phone: {staff.number}</p>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Link to={`/editstaff/${staff._id}`}>
+                  <button className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600 transition duration-200">
+                    Details
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </Link>
+                <button
+                  onClick={() => deleteStaff(staff._id)}
+                  className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 transition duration-200"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-blue-600 p-4 text-white text-center mt-auto">
+        <p>&copy; {new Date().getFullYear()} CJ Attire. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
